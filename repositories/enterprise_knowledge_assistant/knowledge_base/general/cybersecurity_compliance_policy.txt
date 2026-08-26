@@ -1,0 +1,25 @@
+ZENSAR TECHNOLOGIES - CYBERSECURITY & INFORMATION SECURITY POLICY
+
+Document Type: Enterprise Information Security Policy
+Organization: Zensar Technologies Limited (RPG Enterprises)
+Version: 3.1
+Effective Date: January 1, 2026
+
+1. Information Security Governance & Standards
+Zensar Technologies enforces strict information security and risk management aligned with international industry frameworks:
+- Certifications: ISO/IEC 27001:2022, SOC 2 Type II, and GDPR / Indian DPDP Act compliance.
+- Zero Trust Architecture: Access is verified per request with Least Privilege access controls.
+
+2. Access Control, Passwords & Multi-Factor Authentication (MFA)
+- Multi-Factor Authentication (MFA): Mandatory MFA across all corporate accounts, VPNs, AWS/Azure consoles, and email portals (using Microsoft Authenticator or hardware security keys).
+- Password Complexity: Minimum 12 characters, requiring uppercase, lowercase, numbers, and special symbols; mandatory expiration every 90 days.
+- Screen Lock: Inactive workstations must auto-lock after 5 minutes of inactivity.
+
+3. Data Classification & Confidentiality
+- Public: Marketing materials and public press releases.
+- Internal: General company communications and employee handbooks.
+- Confidential: Client source code, project architectures, test databases, and contracts.
+- Restricted: Sensitive PII, customer credentials, financial records, and cryptographic private keys.
+
+4. Incident Management & Reporting
+Any suspected phishing, unauthorized data access, malware detection, or loss of corporate devices must be reported within 1 hour to security@zensar.com or the 24/7 Security Operations Center (SOC).

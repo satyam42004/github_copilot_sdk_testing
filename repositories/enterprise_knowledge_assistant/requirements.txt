@@ -1,0 +1,35 @@
+# Core
+python-dotenv
+pydantic
+
+# LangGraph / LangChain
+langgraph
+langchain
+langchain-community
+langchain-groq
+langchain-ollama
+langchain-google-vertexai
+
+# RAG
+chromadb
+sentence-transformers
+pypdf
+
+# RAG Evaluation
+ragas
+instructor
+
+# MCP
+mcp
+fastmcp
+
+# UI
+streamlit
+
+# Observability
+langsmith
+
+# Guardrails
+guardrails-ai
+presidio-analyzer
+presidio-anonymizer

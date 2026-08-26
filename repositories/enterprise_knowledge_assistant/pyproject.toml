@@ -1,0 +1,45 @@
+[project]
+name = "enterprise-knowledge-assistant"
+version = "0.1.0"
+requires-python = ">=3.10,<3.11"
+
+dependencies = [
+    "python-dotenv",
+    "pydantic",
+
+    # LangGraph / LangChain
+    "langgraph",
+    "langchain",
+    "langchain-community",
+    "langchain-groq",
+    "langchain-ollama",
+    "langchain-google-vertexai",
+
+    # RAG
+    "chromadb",
+    "sentence-transformers==5.7.0",
+    "huggingface-hub==1.27.0",
+    "pypdf",
+
+    # RAG Evaluation
+    "ragas",
+    "instructor",
+
+    # MCP
+    "mcp",
+    "fastmcp",
+
+    # UI
+    "streamlit",
+
+    # Observability
+    "langsmith",
+
+    # Guardrails
+    "guardrails-ai",
+    "presidio-analyzer",
+    "presidio-anonymizer",
+
+    # Python 3.10 compatible ONNX Runtime
+    "onnxruntime==1.23.2",
+]

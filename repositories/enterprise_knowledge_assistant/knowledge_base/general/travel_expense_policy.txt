@@ -1,0 +1,24 @@
+ZENSAR TECHNOLOGIES - TRAVEL & EXPENSE REIMBURSEMENT POLICY
+
+Document Type: Finance & Operations Policy
+Organization: Zensar Technologies Limited (RPG Enterprises)
+Version: 3.1
+Effective Date: January 1, 2026
+
+1. Purpose and Guidelines
+This policy governs official domestic and international business travel for Zensar employees, ensuring safety, fiscal responsibility, and transparent reimbursement.
+
+2. Domestic Travel Guidelines (India)
+- Air Travel: Economy class bookings through the corporate travel desk for travel distances exceeding 500 km.
+- Rail Travel: 2nd AC / 3rd AC train bookings for approved domestic routes.
+- Hotel Accommodation: Approved 3-star/4-star corporate partner hotels booked via the Zensar Travel Portal.
+- Daily Per Diem & Meal Allowance: Up to INR 1,500 per day for meals and incidental expenses in Tier-1 cities (Mumbai, NCR, Bengaluru, Hyderabad, Chennai, Pune).
+
+3. International Travel Guidelines
+- Air Travel: Economy class on designated international carriers. Business class is eligible for flights exceeding 9 continuous hours with VP approval.
+- International Per Diem: Fixed daily allowance according to country tier ($75/day in USA, £65/day in UK, €70/day in EU, R800/day in South Africa) covering meals and incidentals.
+- Travel Insurance: Comprehensive global medical and travel insurance provided for the duration of the international deployment.
+
+4. Expense Reimbursement Workflow
+- Submission Window: Expense claims with original GST receipts must be submitted via Zensar ERP within 15 days of travel completion.
+- Approval Hierarchy: Manager approval followed by Finance audit; disbursements processed in the next payroll cycle.

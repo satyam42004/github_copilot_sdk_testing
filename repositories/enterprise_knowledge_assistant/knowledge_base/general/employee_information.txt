@@ -1,0 +1,31 @@
+ZENSAR TECHNOLOGIES - EMPLOYEE BENEFITS, LEARNING & TOTAL REWARDS
+
+Document Type: Human Resources & Total Rewards Guide
+Organization: Zensar Technologies Limited (RPG Enterprises)
+Version: 3.1
+Effective Date: January 1, 2026
+
+1. Standard Working Schedule & Working Hours
+- Work Week: Monday through Friday, 40 hours per week (typically 9:00 AM to 6:00 PM local time with a 1-hour lunch break).
+- Flexible Timing: Available with manager approval based on project deliverables and client timezone alignment.
+
+2. Healthcare & Insurance Benefits
+- Group Medical Insurance: Comprehensive hospitalization coverage of INR 5,00,000 to INR 10,00,000 for employee, spouse, children, and dependent parents.
+- Group Term Life Insurance: 3x annual CTC provided at zero cost to the employee.
+- Group Personal Accident Cover: 24/7 worldwide personal accident insurance.
+- Employee Assistance Program (EAP): 24/7 confidential psychological counseling and mental wellbeing support via the RPG Wellness Program.
+- Annual Health Checkup: Fully sponsored annual health screening for employees aged 35 and above.
+
+3. Learning, Certifications & RPG Academy (ZenU)
+- ZenU (Zensar University) & RPG Academy: Continuous learning portal providing free access to Coursera, Udemy, Pluralsight, and internal AI training modules.
+- Cloud & AI Certification Sponsorship: 100% reimbursement for completed certifications in AWS, Azure, GCP, LangChain/LangGraph, Databricks, and Kubernetes.
+- Certification Cash Awards: Employees receive special recognition bonuses upon completing premier architect certifications.
+
+4. Performance Management & Career Growth
+- Appraisal Cycles: Bi-annual performance reviews (Mid-year check-in in October, Annual review in April).
+- Career Paths: Defined tracks for Technical Architects, Engineering Leads, Delivery Managers, and Domain Consultants.
+
+5. Financial Benefits & Provident Fund
+- Provident Fund (PF) & Gratuity: Fully compliant statutory benefits with matching company PF contributions.
+- National Pension Scheme (NPS): Tax-efficient corporate NPS benefit option.
+- Employee Recognition: Quarterly 'Spot Awards', 'Star of the Month', and annual 'RPG Oscars'.

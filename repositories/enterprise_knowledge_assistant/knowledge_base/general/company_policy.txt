@@ -1,0 +1,27 @@
+ZENSAR TECHNOLOGIES - CORPORATE POLICIES & CODE OF CONDUCT
+
+Document Type: Corporate Governance & Operational Policies
+Organization: Zensar Technologies Limited (RPG Enterprises)
+Version: 3.1
+Effective Date: January 1, 2026
+
+1. Code of Business Conduct & Ethics
+All associates at Zensar Technologies must adhere to the highest standards of professional integrity. Conflicts of interest, insider trading, and unauthorized disclosure of proprietary or client data are strictly prohibited. Violations must be reported through the confidential Zensar Whistleblower Portal.
+
+2. Prevention of Sexual Harassment (POSH) & Anti-Harassment
+Zensar is committed to providing a safe, respectful, and inclusive working environment free from harassment, discrimination, or bias:
+- Internal Complaints Committee (ICC): Every Zensar campus maintains an active ICC in full compliance with the POSH Act.
+- Zero Tolerance: Immediate inquiry and disciplinary actions, up to termination, apply to any proven harassment conduct.
+- Reporting: Submissions can be made confidentially to posh@zensar.com or the employee portal.
+
+3. Hybrid Workplace & Remote Working Policy
+- Work Model: Zensar operates on a flexible hybrid work model (standard 3 days in-office, 2 days remote per week, aligned with project and client SLAs).
+- Core Collaboration Hours: 10:00 AM to 4:00 PM IST (or relevant client time zone) for standups, client meetings, and cross-functional reviews.
+- Remote Office Readiness: Employees must maintain secure, high-speed broadband and an ergonomics-compliant workspace during remote days.
+
+4. Non-Disclosure & Intellectual Property (IP)
+- Client Confidentiality: All source code, architectural blueprints, system configurations, and client datasets are confidential and proprietary.
+- IP Ownership: Inventions, software, documentation, and agentic workflows created during employment remain the sole intellectual property of Zensar Technologies and its designated clients.
+
+5. Equal Employment Opportunity & Inclusion
+Zensar provides equal opportunities in recruitment, promotions, compensation, and career growth irrespective of gender, race, religion, sexual orientation, disability, or age.

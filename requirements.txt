@@ -1,0 +1,28 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+pydantic-settings
+
+# HTTP / API
+requests
+httpx
+
+
+# RAG / Vector Search
+langchain
+langchain-openai
+langchain-community
+chromadb
+
+# Data processing
+numpy
+pandas
+
+# Utilities
+python-multipart
+PyYAML
+
+github-copilot-sdk
+
+python-dotenv

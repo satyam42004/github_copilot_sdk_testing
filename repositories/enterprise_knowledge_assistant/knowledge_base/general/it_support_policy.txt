@@ -1,0 +1,30 @@
+ZENSAR TECHNOLOGIES - IT SUPPORT, HARDWARE & SERVICE DESK POLICY
+
+Document Type: IT Infrastructure & Support Policy
+Organization: Zensar Technologies Limited (RPG Enterprises)
+Version: 3.1
+Effective Date: January 1, 2026
+
+1. Global IT Helpdesk & Support Channels
+Zensar Global IT Infrastructure Services provides 24/7 technical support for hardware, software, VPN, cloud accounts, and network connectivity:
+- Internal Service Portal: ithelpdesk.zensar.com (or via Enterprise Knowledge Assistant MCP ticketing)
+- IT Support Email: ithelpdesk@zensar.com
+- Emergency IT Hotline: Extension 4357 (HELP) on office VoIP, or +91-20-6605-4357
+
+2. Hardware Allocation and Refresh Cycles
+- Laptop Allocation: Standard high-performance enterprise laptops (Dell Latitude / Lenovo ThinkPad / Apple MacBook Pro based on engineering role requirements).
+- Hardware Refresh: Corporate hardware is refreshed every 36 to 48 months of active deployment.
+- Peripherals: Employees receive an external monitor, mouse, keyboard, and headset for approved hybrid setups.
+
+3. Software Access and Licenses
+- Approved Software: All software must be installed via the Zensar Software Center or approved IT service catalog.
+- Unauthorized Software: Installing unlicensed, cracked, or unauthorized peer-to-peer software on company assets is strictly prohibited.
+
+4. IT Service Level Agreements (SLAs) for Ticket Resolution
+- Critical (P1 - System/VPN Outage for Multiple Users): Response within 15 minutes; Resolution target within 2 hours.
+- High (P2 - Individual Machine Breakdown / Critical Client Blocker): Response within 30 minutes; Resolution target within 4 hours.
+- Medium (P3 - Software Installation, Access Requests): Response within 2 hours; Resolution target within 24 hours.
+- Low (P4 - General Inquiries, Peripheral Requests): Response within 4 hours; Resolution target within 48 hours.
+
+5. Ticketing Integration with MCP
+Employees can utilize the Enterprise Knowledge Assistant to directly raise and monitor IT tickets stored in the enterprise ticketing system.

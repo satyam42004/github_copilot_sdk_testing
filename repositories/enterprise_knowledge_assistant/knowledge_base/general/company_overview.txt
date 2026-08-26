@@ -1,0 +1,45 @@
+ZENSAR TECHNOLOGIES - COMPANY OVERVIEW & CORPORATE PROFILE
+
+Document Type: Corporate Overview & Enterprise Profile
+Organization: Zensar Technologies Limited (An RPG Group Company)
+Headquarters: Zensar Knowledge Park, Plot #4, Kharadi MIDC, Off Nagar Road, Pune 411014, Maharashtra, India
+Website: www.zensar.com
+Effective Date: January 1, 2026
+
+1. Organization Summary & Background
+Zensar Technologies Limited is a leading digital solutions and technology services company, part of the multi-billion-dollar RPG Enterprises conglomerate. With over 10,000 employees globally, Zensar partners with enterprise clients across North America, the UK, Europe, and South Africa to deliver transformative digital experiences, scalable cloud engineering, artificial intelligence platforms, and next-generation application modernization.
+
+2. Parent Group: RPG Enterprises
+Founded by Dr. Rama Prasad Goenka in 1979, RPG Enterprises is one of India's premier industrial conglomerates. Zensar operates under the flagship leadership of RPG Enterprises, adhering to core group values of ethics, innovation, and "Hello Happiness".
+
+3. Core Corporate Values (RPG Philosophy)
+- Passion: Relentless pursuit of excellence in digital engineering and client outcomes.
+- Trust & Integrity: Highest transparency in business operations, client confidentiality, and corporate governance.
+- Agility: Speed, adaptability, and responsiveness in adopting emerging technologies such as Generative AI, LangGraph agentic workflows, and cloud-native solutions.
+- Hello Happiness: Fostering employee wellbeing, psychological safety, and meaningful career enrichment.
+
+4. Global Delivery Centers & Office Locations
+- Global Corporate Headquarters: Zensar Knowledge Park, Kharadi, Pune, India
+- India Development Centers:
+  * Pune: Zensar Knowledge Park (Kharadi) & Magarpatta Cybercity
+  * Bengaluru: Outer Ring Road, Bellandur / Whitefield
+  * Hyderabad: HITEC City, Madhapur
+  * Kolkata: Sector V, Salt Lake
+  * Mumbai: RPG House, Worli
+- North America Operations:
+  * US Headquarters: Princeton, New Jersey
+  * Innovation Hubs: San Jose (Silicon Valley), CA; Dallas, TX; Chicago, IL
+- Europe & UK:
+  * UK Regional HQ: Reading, Berkshire (Green Park) & London
+  * European Centers: Frankfurt, Germany; Amsterdam, Netherlands
+- Africa Regional Hub:
+  * Johannesburg (Sandton) & Cape Town, South Africa
+
+5. Core Business Offerings & Capability Verticals
+- Experience Services: UI/UX design, customer journey mapping, and omnichannel digital platforms.
+- Advanced Engineering & Application Modernization: Cloud-native full-stack microservices, API architecture, DevOps automation, and legacy modernization.
+- Data Engineering, AI & Generative AI: LangGraph multi-agent systems, Enterprise RAG pipelines, predictive analytics, LLM fine-tuning, and data platform governance.
+- Foundation Services (Cloud, Infrastructure & Cybersecurity): Hybrid multi-cloud management (AWS, Azure, GCP), Zero Trust network architecture, and 24/7 managed security operations.
+
+6. Enterprise Knowledge Assistant System
+Zensar employees have access to the AI-powered Enterprise Knowledge Assistant to seamlessly query corporate policies, HR guidelines, IT support workflows, and create support tickets via Model Context Protocol (MCP) tool integration.
