@@ -1,6 +1,7 @@
 from copilot import define_tool
 from pydantic import BaseModel, Field
 
+from observability import record_tool_span
 from .repository import get_repository_path
 
 
@@ -11,45 +12,46 @@ class SearchCodeParams(BaseModel):
 
 
 def _search_code(params: SearchCodeParams, invocation) -> str:
-    root = get_repository_path()
+    with record_tool_span("search_code"):
+        root = get_repository_path()
 
-    ignored = {
-        ".git",
-        ".venv",
-        "venv",
-        "__pycache__",
-        "node_modules",
-    }
+        ignored = {
+            ".git",
+            ".venv",
+            "venv",
+            "__pycache__",
+            "node_modules",
+        }
 
-    results = []
+        results = []
 
-    for path in root.rglob("*"):
-        if not path.is_file():
-            continue
+        for path in root.rglob("*"):
+            if not path.is_file():
+                continue
 
-        if any(part in ignored for part in path.parts):
-            continue
+            if any(part in ignored for part in path.parts):
+                continue
 
-        try:
-            lines = path.read_text(
-                encoding="utf-8",
-                errors="ignore",
-            ).splitlines()
-        except Exception:
-            continue
+            try:
+                lines = path.read_text(
+                    encoding="utf-8",
+                    errors="ignore",
+                ).splitlines()
+            except Exception:
+                continue
 
-        for line_number, line in enumerate(lines, start=1):
-            if params.query.lower() in line.lower():
-                results.append(
-                    f"{path.relative_to(root)}:"
-                    f"{line_number}: "
-                    f"{line.strip()}"
-                )
+            for line_number, line in enumerate(lines, start=1):
+                if params.query.lower() in line.lower():
+                    results.append(
+                        f"{path.relative_to(root)}:"
+                        f"{line_number}: "
+                        f"{line.strip()}"
+                    )
 
-    if not results:
-        return f"No matches found for: {params.query}"
+        if not results:
+            return f"No matches found for: {params.query}"
 
-    return "\n".join(results[:200])
+        return "\n".join(results[:200])
 
 
 search_code = define_tool(

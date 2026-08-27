@@ -2,35 +2,37 @@ from pathlib import Path
 
 from copilot import define_tool
 
+from observability import record_tool_span
 from .repository import get_repository_path
 
 
 def _list_files(params, invocation) -> str:
-    root = get_repository_path()
+    with record_tool_span("list_files"):
+        root = get_repository_path()
 
-    ignored = {
-        ".git",
-        ".venv",
-        "venv",
-        "__pycache__",
-        "node_modules",
-    }
+        ignored = {
+            ".git",
+            ".venv",
+            "venv",
+            "__pycache__",
+            "node_modules",
+        }
 
-    files = []
+        files = []
 
-    for path in root.rglob("*"):
-        if not path.is_file():
-            continue
+        for path in root.rglob("*"):
+            if not path.is_file():
+                continue
 
-        if any(part in ignored for part in path.parts):
-            continue
+            if any(part in ignored for part in path.parts):
+                continue
 
-        files.append(str(path.relative_to(root)))
+            files.append(str(path.relative_to(root)))
 
-    if not files:
-        return "No files found."
+        if not files:
+            return "No files found."
 
-    return "\n".join(sorted(files))
+        return "\n".join(sorted(files))
 
 
 list_files = define_tool(

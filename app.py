@@ -84,6 +84,25 @@ with st.sidebar:
     st.divider()
 
     # ========================================================
+    # OBSERVABILITY
+    # ========================================================
+
+    st.markdown("### Observability")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("📊 Open Phoenix Traces", use_container_width=True):
+            st.info("Opening Phoenix at http://localhost:6006")
+    
+    with col2:
+        if st.button("🔄 Refresh Traces", use_container_width=True):
+            st.info("Traces update automatically in Phoenix")
+
+    st.caption("Phoenix traces at: http://localhost:6006")
+
+    st.divider()
+
+    # ========================================================
     # AUTHENTICATION
     # ========================================================
 

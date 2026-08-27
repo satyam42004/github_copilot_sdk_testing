@@ -1,5 +1,32 @@
-
-.env
-.venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# UV
+.uv-cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Phoenix
+.phoenix/
+.phoenix_backup/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
