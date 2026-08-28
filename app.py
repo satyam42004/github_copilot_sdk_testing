@@ -252,6 +252,61 @@ with st.sidebar:
                     f"Connection failed: {e}"
                 )
 
+
+    # ========================================================
+    # COPILOT USAGE
+    # ========================================================
+
+    st.divider()
+    st.markdown("### Copilot Usage")
+
+    if st.session_state.copilot_service is not None:
+
+        usage = st.session_state.copilot_service.get_usage()
+
+        st.metric(
+            "AI Credits",
+            f"{usage['ai_credits']:.2f}",
+        )
+
+        st.caption(
+            f"Model: {usage['model']}"
+        )
+
+        usage_col1, usage_col2 = st.columns(2)
+
+        with usage_col1:
+            st.metric(
+                "Input Tokens",
+                f"{usage['input_tokens']:,}",
+            )
+            st.metric(
+                "Cache Read",
+                f"{usage['cache_read_tokens']:,}",
+            )
+            st.metric(
+                "Reasoning",
+                f"{usage['reasoning_tokens']:,}",
+            )
+
+        with usage_col2:
+            st.metric(
+                "Output Tokens",
+                f"{usage['output_tokens']:,}",
+            )
+            st.metric(
+                "Cache Write",
+                f"{usage['cache_write_tokens']:,}",
+            )
+            st.metric(
+                "Total Tokens",
+                f"{usage['total_tokens']:,}",
+            )
+
+        st.caption(
+            f"Total nano AIU: {usage['total_nano_aiu']:,.0f}"
+        )
+
     # ========================================================
     # STATUS
     # ========================================================

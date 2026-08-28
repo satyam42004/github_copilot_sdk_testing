@@ -4,6 +4,7 @@ import threading
 from pathlib import Path
 
 from copilot import CopilotClient
+from copilot.session_events import SessionEventType
 
 from tools import list_files, read_file, search_code
 
@@ -13,6 +14,103 @@ from observability import (
     record_event_span,
     flush_traces,
 )
+
+
+# ==========================================================
+# USAGE TRACKER
+# ==========================================================
+
+class UsageTracker:
+    """Tracks Copilot SDK token and AI-credit usage."""
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.model = None
+        self.input_tokens = 0
+        self.output_tokens = 0
+        self.cache_read_tokens = 0
+        self.cache_write_tokens = 0
+        self.reasoning_tokens = 0
+        self.ai_credits = 0.0
+        self.total_nano_aiu = 0.0
+        self.assistant_calls = 0
+
+    def handle_event(self, event):
+        """Handle Copilot SDK usage events."""
+
+        if event.type == SessionEventType.ASSISTANT_USAGE:
+            data = event.data
+
+            self.model = data.model
+            self.input_tokens += data.input_tokens or 0
+            self.output_tokens += data.output_tokens or 0
+            self.cache_read_tokens += data.cache_read_tokens or 0
+            self.cache_write_tokens += data.cache_write_tokens or 0
+            self.reasoning_tokens += data.reasoning_tokens or 0
+            self.assistant_calls += 1
+
+            # Keep the latest per-call cost for visibility.
+            # The session checkpoint below is authoritative
+            # for the accumulated session-level AI credits.
+            if data.cost is not None:
+                self.ai_credits = data.cost
+
+            record_event_span(
+                "copilot.usage",
+                {
+                    "gen_ai.request.model": data.model or "unknown",
+                    "gen_ai.usage.input_tokens": data.input_tokens or 0,
+                    "gen_ai.usage.output_tokens": data.output_tokens or 0,
+                    "copilot.usage.cache_read_tokens": data.cache_read_tokens or 0,
+                    "copilot.usage.cache_write_tokens": data.cache_write_tokens or 0,
+                    "copilot.usage.reasoning_tokens": data.reasoning_tokens or 0,
+                    "copilot.usage.ai_credits": data.cost or 0,
+                },
+            )
+
+            print("\n" + "-" * 60)
+            print("ASSISTANT USAGE")
+            print("-" * 60)
+            print(f"Model:              {data.model}")
+            print(f"Input tokens:       {data.input_tokens}")
+            print(f"Output tokens:      {data.output_tokens}")
+            print(f"Cache read tokens:  {data.cache_read_tokens}")
+            print(f"Cache write tokens: {data.cache_write_tokens}")
+            print(f"Reasoning tokens:   {data.reasoning_tokens}")
+            print(f"AI credits:         {data.cost}")
+
+        elif event.type == SessionEventType.SESSION_USAGE_CHECKPOINT:
+            data = event.data
+
+            self.total_nano_aiu = getattr(
+                data, "total_nano_aiu", 0
+            ) or 0
+
+            # SDK 1.0.11 exposes the accumulated session value
+            # as _total_premium_requests.
+            session_credits = getattr(
+                data, "_total_premium_requests", None
+            )
+
+            if session_credits is not None:
+                self.ai_credits = session_credits
+
+    def get_usage(self):
+        """Return current session usage for Streamlit/UI."""
+        return {
+            "model": self.model or "unknown",
+            "input_tokens": self.input_tokens,
+            "output_tokens": self.output_tokens,
+            "total_tokens": self.input_tokens + self.output_tokens,
+            "cache_read_tokens": self.cache_read_tokens,
+            "cache_write_tokens": self.cache_write_tokens,
+            "reasoning_tokens": self.reasoning_tokens,
+            "ai_credits": self.ai_credits,
+            "total_nano_aiu": self.total_nano_aiu,
+            "assistant_calls": self.assistant_calls,
+        }
 
 
 class CopilotService:
@@ -25,6 +123,9 @@ class CopilotService:
         self.client = None
         self.session = None
         self.repository_path = None
+
+        # Copilot SDK usage / AI-credit tracking.
+        self.usage_tracker = UsageTracker()
 
         # Persistent asyncio loop.
         self.loop = None
@@ -99,6 +200,7 @@ class CopilotService:
         # Initialize Phoenix before creating the Copilot session.
 
         configure_tracing()
+        self.usage_tracker.reset()
 
         self._ensure_loop()
 
@@ -203,6 +305,10 @@ remote permissions.
                         search_code,
                     ],
 
+                    # Capture Copilot SDK usage events so the
+                    # Streamlit app has the same usage data as CLI.
+                    on_event=self.usage_tracker.handle_event,
+
                     hooks={
 
                         "on_pre_tool_use":
@@ -287,6 +393,14 @@ PERSONA:
         )
 
         flush_traces()
+
+    # ==========================================================
+    # USAGE
+    # ==========================================================
+
+    def get_usage(self):
+        """Return current Copilot session usage."""
+        return self.usage_tracker.get_usage()
 
     # ==========================================================
     # REPOSITORY STATUS
