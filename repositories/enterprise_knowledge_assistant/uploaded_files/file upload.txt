@@ -1,0 +1,4 @@
+Hello Copilot!
+
+This file is being used to test Streamlit file uploading.
+My test value is 12345.

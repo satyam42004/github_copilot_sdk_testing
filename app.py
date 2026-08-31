@@ -1,6 +1,7 @@
 import time
 
 import streamlit as st
+from pathlib import Path
 
 from copilot_service import CopilotService
 
@@ -32,6 +33,7 @@ defaults = {
     "auth_mode": "Existing Copilot Login",
     "persona": "Developer",
     "last_operation_status": None,
+    "uploaded_files": [],
 }
 
 for key, value in defaults.items():
@@ -80,6 +82,37 @@ with st.sidebar:
 
     st.markdown("## 🤖 Copilot Agent")
     st.caption("Developer workspace")
+
+    st.divider()
+
+    # ========================================================
+    # FILE UPLOAD
+    # ========================================================
+
+    st.markdown("### Attach Files")
+
+    uploaded_files = st.file_uploader(
+        "Upload files for the agent",
+        accept_multiple_files=True,
+        type=[
+            "txt", "md", "py", "js", "ts", "tsx", "jsx",
+            "html", "css", "json", "yaml", "yml", "xml",
+            "csv", "sql", "java", "c", "cpp", "h", "hpp",
+            "go", "rs", "sh", "ps1", "pdf",
+        ],
+        help="Attach text/code files or PDFs to the next agent request.",
+        label_visibility="collapsed",
+    )
+
+    if uploaded_files:
+        st.session_state.uploaded_files = uploaded_files
+        st.caption(f"{len(uploaded_files)} file(s) attached")
+
+        for file in uploaded_files:
+            st.write(f"📎 {file.name}")
+
+    elif st.session_state.uploaded_files:
+        st.session_state.uploaded_files = []
 
     st.divider()
 
@@ -317,6 +350,118 @@ with st.sidebar:
         st.success("● Connected")
     else:
         st.error("● Not connected")
+
+
+
+# ============================================================
+# SAVE UPLOADED FILES
+# ============================================================
+
+def save_uploaded_files(files, repository_path):
+    """Save uploaded files into a repository-local upload folder."""
+
+    if not files:
+        return []
+
+    upload_dir = Path(repository_path) / "uploaded_files"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+
+    saved_files = []
+
+    for file in files:
+        filename = Path(file.name).name
+        destination = upload_dir / filename
+
+        # Never overwrite an existing uploaded file.
+        if destination.exists():
+            stem = destination.stem
+            suffix = destination.suffix
+            counter = 1
+
+            while destination.exists():
+                destination = (
+                    upload_dir / f"{stem}_{counter}{suffix}"
+                )
+                counter += 1
+
+        destination.write_bytes(file.getvalue())
+        saved_files.append(str(destination))
+
+    return saved_files
+
+
+# ============================================================
+# FILE CONTENT EXTRACTION
+# ============================================================
+
+def extract_uploaded_file(file):
+    """Extract readable text from an uploaded Streamlit file."""
+    suffix = Path(file.name).suffix.lower()
+    data = file.getvalue()
+
+    if suffix == ".pdf":
+        try:
+            from pypdf import PdfReader
+            import io
+
+            reader = PdfReader(io.BytesIO(data))
+            pages = []
+
+            for page in reader.pages:
+                pages.append(page.extract_text() or "")
+
+            return "\n\n".join(pages).strip()
+
+        except ImportError:
+            return (
+                f"[PDF extraction unavailable for {file.name}. "
+                "Install pypdf with: uv add pypdf]"
+            )
+        except Exception as exc:
+            return f"[Could not read PDF {file.name}: {exc}]"
+
+    try:
+        return data.decode("utf-8")
+    except UnicodeDecodeError:
+        return (
+            f"[Binary/non-UTF-8 file: {file.name}. "
+            "The file was uploaded but its contents could not be decoded as text.]"
+        )
+
+
+def build_prompt_with_files(prompt, files):
+    """Build the agent prompt with attached file contents."""
+    if not files:
+        return prompt
+
+    sections = [
+        prompt,
+        "",
+        "ATTACHED USER FILES:",
+        "The following files were explicitly uploaded by the user.",
+        "Use them as additional context for this request.",
+        "Do not assume their contents beyond what is provided below.",
+    ]
+
+    for file in files:
+        content = extract_uploaded_file(file)
+
+        # Protect the UI/service from accidentally enormous prompts.
+        max_chars = 100_000
+        if len(content) > max_chars:
+            content = (
+                content[:max_chars]
+                + "\n\n[Content truncated at 100,000 characters.]"
+            )
+
+        sections.extend([
+            "",
+            f"--- FILE: {file.name} ---",
+            content,
+            f"--- END FILE: {file.name} ---",
+        ])
+
+    return "\n".join(sections)
 
 
 # ============================================================
@@ -625,10 +770,39 @@ if not agent_state["running"]:
         # Clear previous operation status.
         st.session_state.last_operation_status = None
 
+        # Save the actual uploaded files into the repository.
+        saved_files = save_uploaded_files(
+            st.session_state.uploaded_files,
+            st.session_state.repository_path,
+        )
+
+        if saved_files:
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": (
+                        "📁 **Uploaded file(s) saved:**\n\n"
+                        + "\n".join(
+                            f"- `{path}`"
+                            for path in saved_files
+                        )
+                    ),
+                }
+            )
+
+        # Include attached file contents in this request only.
+        request_prompt = build_prompt_with_files(
+            prompt,
+            st.session_state.uploaded_files,
+        )
+
         # Start the request in CopilotService.
         started = service.ask_background(
-            prompt
+            request_prompt
         )
+
+        # Clear attachments after the request is submitted.
+        st.session_state.uploaded_files = []
 
         if not started:
 
