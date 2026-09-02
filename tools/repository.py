@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 REPOSITORY_PATH = Path(
-    r"C:\Users\satya\Downloads\github_copilot\repositories\enterprise_knowledge_assistant"
+    r"C:\Users\satya\Desktop\copilot_empty_test"
 ).resolve()
 
 

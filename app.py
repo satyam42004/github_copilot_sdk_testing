@@ -1,7 +1,7 @@
 import time
+from pathlib import Path
 
 import streamlit as st
-from pathlib import Path
 
 from copilot_service import CopilotService
 
@@ -27,13 +27,13 @@ defaults = {
     "connected": False,
     "messages": [],
     "repository_path": (
-        r"C:\Users\satya\Downloads\github_copilot"
-        r"\repositories\enterprise_knowledge_assistant"
+        r"C:\Users\satya\Desktop\copilot_empty_test"
     ),
     "auth_mode": "Existing Copilot Login",
     "persona": "Developer",
     "last_operation_status": None,
     "uploaded_files": [],
+    "allowed_folders": [],
 }
 
 for key, value in defaults.items():
@@ -123,15 +123,28 @@ with st.sidebar:
     st.markdown("### Observability")
 
     col1, col2 = st.columns(2)
-    with col1:
-        if st.button("📊 Open Phoenix Traces", use_container_width=True):
-            st.info("Opening Phoenix at http://localhost:6006")
-    
-    with col2:
-        if st.button("🔄 Refresh Traces", use_container_width=True):
-            st.info("Traces update automatically in Phoenix")
 
-    st.caption("Phoenix traces at: http://localhost:6006")
+    with col1:
+        if st.button(
+            "📊 Open Phoenix Traces",
+            use_container_width=True,
+        ):
+            st.info(
+                "Opening Phoenix at http://localhost:6006"
+            )
+
+    with col2:
+        if st.button(
+            "🔄 Refresh Traces",
+            use_container_width=True,
+        ):
+            st.info(
+                "Traces update automatically in Phoenix"
+            )
+
+    st.caption(
+        "Phoenix traces at: http://localhost:6006"
+    )
 
     st.divider()
 
@@ -190,7 +203,37 @@ with st.sidebar:
     )
 
     st.caption(
-        "The agent works directly against this local path."
+        "The repository is always included in the access policy."
+    )
+
+    # ========================================================
+    # FILE ACCESS POLICY
+    # ========================================================
+
+    st.markdown("### File Access")
+
+    desktop_path = str(Path.home() / "Desktop")
+
+    default_allowed_folders = (
+        st.session_state.allowed_folders
+        or [desktop_path]
+    )
+
+    allowed_folders_text = st.text_area(
+        "Additional allowed folders",
+        value="\n".join(default_allowed_folders),
+        help=(
+            "Enter one folder per line. The repository is always "
+            "allowed. These folders are additional locations the "
+            "agent is allowed to access."
+        ),
+        height=100,
+        label_visibility="collapsed",
+    )
+
+    st.caption(
+        "Default: Repository + Desktop. "
+        "Downloads/Documents remain blocked unless explicitly added."
     )
 
     st.divider()
@@ -238,6 +281,13 @@ with st.sidebar:
 
             try:
 
+                # One folder per line.
+                configured_allowed_folders = [
+                    line.strip()
+                    for line in allowed_folders_text.splitlines()
+                    if line.strip()
+                ]
+
                 old_service = (
                     st.session_state.copilot_service
                 )
@@ -260,6 +310,9 @@ with st.sidebar:
                     repository_path=(
                         repository_path.strip()
                     ),
+                    allowed_folders=(
+                        configured_allowed_folders
+                    ),
                 )
 
                 st.session_state.copilot_service = service
@@ -269,6 +322,9 @@ with st.sidebar:
                 )
                 st.session_state.auth_mode = auth_mode
                 st.session_state.persona = persona
+                st.session_state.allowed_folders = (
+                    configured_allowed_folders
+                )
                 st.session_state.messages = []
                 st.session_state.last_operation_status = None
 
@@ -284,7 +340,6 @@ with st.sidebar:
                 st.error(
                     f"Connection failed: {e}"
                 )
-
 
     # ========================================================
     # COPILOT USAGE
@@ -302,43 +357,97 @@ with st.sidebar:
             f"{usage['ai_credits']:.2f}",
         )
 
-        st.caption(
-            f"Model: {usage['model']}"
-        )
+        st.caption(f"Model: {usage['model']}")
+        st.caption(f"Session model calls: {usage['assistant_calls']}")
 
         usage_col1, usage_col2 = st.columns(2)
 
         with usage_col1:
-            st.metric(
-                "Input Tokens",
-                f"{usage['input_tokens']:,}",
-            )
-            st.metric(
-                "Cache Read",
-                f"{usage['cache_read_tokens']:,}",
-            )
-            st.metric(
-                "Reasoning",
-                f"{usage['reasoning_tokens']:,}",
-            )
+            st.metric("Input Tokens", f"{usage['input_tokens']:,}")
+            st.metric("Cache Read", f"{usage['cache_read_tokens']:,}")
+            st.metric("Reasoning", f"{usage['reasoning_tokens']:,}")
 
         with usage_col2:
-            st.metric(
-                "Output Tokens",
-                f"{usage['output_tokens']:,}",
-            )
-            st.metric(
-                "Cache Write",
-                f"{usage['cache_write_tokens']:,}",
-            )
-            st.metric(
-                "Total Tokens",
-                f"{usage['total_tokens']:,}",
-            )
+            st.metric("Output Tokens", f"{usage['output_tokens']:,}")
+            st.metric("Cache Write", f"{usage['cache_write_tokens']:,}")
+            st.metric("Total Tokens", f"{usage['total_tokens']:,}")
 
         st.caption(
             f"Total nano AIU: {usage['total_nano_aiu']:,.0f}"
         )
+
+        current = usage.get("current_request")
+        completed = usage.get("last_completed_request")
+
+        st.markdown("#### Current Request")
+
+        if current:
+            st.write(f"**Request ID:** `{current['request_id']}`")
+            st.write(f"**Status:** `{current['status']}`")
+            req_col1, req_col2 = st.columns(2)
+            with req_col1:
+                st.metric("Request Input", f"{current['input_tokens']:,}")
+                st.metric("HITL Approvals", current["hitl_approvals"])
+                st.metric("Tools Started", current["tools_started"])
+            with req_col2:
+                st.metric("Request Output", f"{current['output_tokens']:,}")
+                st.metric("HITL Rejections", current["hitl_rejections"])
+                st.metric("Tools Succeeded", current["tools_succeeded"])
+            st.caption(
+                f"Request Total: {current['total_tokens']:,} | "
+                f"Model calls: {current['assistant_calls']} | "
+                f"Tools failed: {current['tools_failed']}"
+            )
+        else:
+            st.caption("No request currently running.")
+
+        st.markdown("#### Last Completed Request")
+
+        if completed:
+            st.write(f"**Request ID:** `{completed['request_id']}`")
+            st.write(f"**Status:** `{completed['status']}`")
+            st.caption(
+                f"Model: {completed['model']} | "
+                f"Input: {completed['input_tokens']:,} | "
+                f"Output: {completed['output_tokens']:,} | "
+                f"Total: {completed['total_tokens']:,}"
+            )
+            st.caption(
+                f"AI credits: {completed['ai_credits']:.2f} | "
+                f"HITL approvals: {completed['hitl_approvals']} | "
+                f"HITL rejections: {completed['hitl_rejections']} | "
+                f"Tools: {completed['tools_started']} started / "
+                f"{completed['tools_succeeded']} succeeded / "
+                f"{completed['tools_failed']} failed"
+            )
+        else:
+            st.caption("No completed request yet.")
+
+    # ========================================================
+    # ACTIVE FILE ACCESS
+    # ========================================================
+
+    if st.session_state.copilot_service is not None:
+
+        policy = (
+            st.session_state.copilot_service
+            .get_file_access_policy()
+        )
+
+        st.divider()
+
+        st.markdown("### Allowed File Access")
+
+        st.caption(
+            "Read / Write folders:"
+        )
+
+        for folder in policy.get("write", []):
+
+            st.code(
+                folder,
+                language=None,
+            )
 
     # ========================================================
     # STATUS
@@ -352,40 +461,68 @@ with st.sidebar:
         st.error("● Not connected")
 
 
-
 # ============================================================
 # SAVE UPLOADED FILES
 # ============================================================
 
-def save_uploaded_files(files, repository_path):
-    """Save uploaded files into a repository-local upload folder."""
+def save_uploaded_files(
+    files,
+    repository_path,
+):
+    """Save uploads into a repository-local folder.
+
+    This is application-controlled storage, not an agent tool
+    operation. The repository itself is part of the configured
+    access policy.
+    """
 
     if not files:
         return []
 
-    upload_dir = Path(repository_path) / "uploaded_files"
-    upload_dir.mkdir(parents=True, exist_ok=True)
+    upload_dir = (
+        Path(repository_path)
+        / "uploaded_files"
+    )
+
+    upload_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     saved_files = []
 
     for file in files:
-        filename = Path(file.name).name
-        destination = upload_dir / filename
 
-        # Never overwrite an existing uploaded file.
+        # Prevent path components in the uploaded filename.
+        filename = Path(file.name).name
+
+        destination = (
+            upload_dir / filename
+        )
+
+        # Never overwrite an existing upload.
         if destination.exists():
+
             stem = destination.stem
             suffix = destination.suffix
             counter = 1
 
             while destination.exists():
+
                 destination = (
-                    upload_dir / f"{stem}_{counter}{suffix}"
+                    upload_dir
+                    / f"{stem}_{counter}{suffix}"
                 )
+
                 counter += 1
 
-        destination.write_bytes(file.getvalue())
-        saved_files.append(str(destination))
+        destination.write_bytes(
+            file.getvalue()
+        )
+
+        saved_files.append(
+            str(destination)
+        )
 
     return saved_files
 
@@ -395,42 +532,72 @@ def save_uploaded_files(files, repository_path):
 # ============================================================
 
 def extract_uploaded_file(file):
-    """Extract readable text from an uploaded Streamlit file."""
-    suffix = Path(file.name).suffix.lower()
+    """Extract readable text from an uploaded file."""
+
+    suffix = Path(
+        file.name
+    ).suffix.lower()
+
     data = file.getvalue()
 
     if suffix == ".pdf":
+
         try:
+
             from pypdf import PdfReader
             import io
 
-            reader = PdfReader(io.BytesIO(data))
+            reader = PdfReader(
+                io.BytesIO(data)
+            )
+
             pages = []
 
             for page in reader.pages:
-                pages.append(page.extract_text() or "")
 
-            return "\n\n".join(pages).strip()
+                pages.append(
+                    page.extract_text()
+                    or ""
+                )
+
+            return "\n\n".join(
+                pages
+            ).strip()
 
         except ImportError:
+
             return (
                 f"[PDF extraction unavailable for {file.name}. "
                 "Install pypdf with: uv add pypdf]"
             )
+
         except Exception as exc:
-            return f"[Could not read PDF {file.name}: {exc}]"
+
+            return (
+                f"[Could not read PDF {file.name}: {exc}]"
+            )
 
     try:
-        return data.decode("utf-8")
+
+        return data.decode(
+            "utf-8"
+        )
+
     except UnicodeDecodeError:
+
         return (
             f"[Binary/non-UTF-8 file: {file.name}. "
-            "The file was uploaded but its contents could not be decoded as text.]"
+            "The file was uploaded but its contents "
+            "could not be decoded as text.]"
         )
 
 
-def build_prompt_with_files(prompt, files):
+def build_prompt_with_files(
+    prompt,
+    files,
+):
     """Build the agent prompt with attached file contents."""
+
     if not files:
         return prompt
 
@@ -444,24 +611,35 @@ def build_prompt_with_files(prompt, files):
     ]
 
     for file in files:
-        content = extract_uploaded_file(file)
 
-        # Protect the UI/service from accidentally enormous prompts.
+        content = extract_uploaded_file(
+            file
+        )
+
+        # Keep the current safety limit for now.
+        # Token optimization will be handled as a separate task.
         max_chars = 100_000
+
         if len(content) > max_chars:
+
             content = (
                 content[:max_chars]
-                + "\n\n[Content truncated at 100,000 characters.]"
+                + "\n\n"
+                "[Content truncated at 100,000 characters.]"
             )
 
-        sections.extend([
-            "",
-            f"--- FILE: {file.name} ---",
-            content,
-            f"--- END FILE: {file.name} ---",
-        ])
+        sections.extend(
+            [
+                "",
+                f"--- FILE: {file.name} ---",
+                content,
+                f"--- END FILE: {file.name} ---",
+            ]
+        )
 
-    return "\n".join(sections)
+    return "\n".join(
+        sections
+    )
 
 
 # ============================================================
@@ -501,8 +679,9 @@ if not st.session_state.connected:
 # SERVICE
 # ============================================================
 
-service = st.session_state.copilot_service
-
+service = (
+    st.session_state.copilot_service
+)
 
 if service is None:
 
@@ -555,7 +734,8 @@ elif (
 ):
 
     st.error(
-        "❌ Operation declined. The operation was not performed."
+        "❌ Operation declined or blocked. "
+        "The operation was not performed."
     )
 
 
@@ -563,7 +743,9 @@ elif (
 # HITL APPROVAL
 # ============================================================
 
-pending = service.get_pending_approval()
+pending = (
+    service.get_pending_approval()
+)
 
 if pending:
 
@@ -603,7 +785,9 @@ if pending:
         "Review this operation carefully before approving it."
     )
 
-    approve_col, reject_col = st.columns(2)
+    approve_col, reject_col = (
+        st.columns(2)
+    )
 
     with approve_col:
 
@@ -655,7 +839,9 @@ if pending:
 # AGENT STATE
 # ============================================================
 
-agent_state = service.get_agent_state()
+agent_state = (
+    service.get_agent_state()
+)
 
 
 # ============================================================
@@ -726,7 +912,9 @@ for message in st.session_state.messages:
 # AGENT WORKING
 # ============================================================
 
-agent_state = service.get_agent_state()
+agent_state = (
+    service.get_agent_state()
+)
 
 if agent_state["running"]:
 
@@ -759,7 +947,6 @@ if not agent_state["running"]:
 
     if prompt:
 
-        # Add user's message immediately.
         st.session_state.messages.append(
             {
                 "role": "user",
@@ -767,16 +954,15 @@ if not agent_state["running"]:
             }
         )
 
-        # Clear previous operation status.
         st.session_state.last_operation_status = None
 
-        # Save the actual uploaded files into the repository.
         saved_files = save_uploaded_files(
             st.session_state.uploaded_files,
             st.session_state.repository_path,
         )
 
         if saved_files:
+
             st.session_state.messages.append(
                 {
                     "role": "assistant",
@@ -790,18 +976,19 @@ if not agent_state["running"]:
                 }
             )
 
-        # Include attached file contents in this request only.
-        request_prompt = build_prompt_with_files(
-            prompt,
-            st.session_state.uploaded_files,
+        request_prompt = (
+            build_prompt_with_files(
+                prompt,
+                st.session_state.uploaded_files,
+            )
         )
 
-        # Start the request in CopilotService.
-        started = service.ask_background(
-            request_prompt
+        started = (
+            service.ask_background(
+                request_prompt
+            )
         )
 
-        # Clear attachments after the request is submitted.
         st.session_state.uploaded_files = []
 
         if not started:
